@@ -4,243 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Phone</title>
-    <style>
-        body {
-            background-color: #f1f1f1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
-
-        .phone {
-            width: 375px;
-            height: 667px;
-            background: #fff;
-            border-radius: 36px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            position: relative;
-            overflow: hidden;
-            transform: scale(1);
-            transition: transform 0.5s ease;
-        }
-
-        /* Lock Screen */
-        .lock-screen {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-color: #222;
-            color: white;
-            text-align: center;
-            font-size: 28px;
-            font-weight: bold;
-            position: absolute;
-            width: 100%;
-            top: 0;
-            transform: translateY(100%);
-            transition: transform 0.5s ease;
-        }
-
-        .unlock-text {
-            margin-top: 20px;
-            font-size: 16px;
-            font-weight: normal;
-        }
-
-        .unlock-arrow {
-            font-size: 20px;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-
-        /* App Screen (after unlocking) */
-        .screen {
-            height: 100%;
-            width: 100%;
-            display: flex;
-            flex-direction: row;
-            transition: transform 0.5s ease;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        .app-container {
-            width: 100%;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding-top: 50px;
-            background: #f8f8f8;
-            transition: transform 0.3s ease;
-        }
-
-        .app {
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-
-        .app img {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 15px;
-        }
-
-        .app-name {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        /* Modal for app interaction */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            z-index: 1000;
-            text-align: center;
-        }
-
-        .modal p {
-            font-size: 20px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-
-        .close-btn {
-            background-color: #f44336;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-top: 15px;
-        }
-
-        .swipe-indicator {
-            position: absolute;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 16px;
-            color: #888;
-        }
-
-        .swipe-indicator span {
-            cursor: pointer;
-            font-size: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="phone" id="phone">
-        <!-- Lock Screen -->
-        <div class="lock-screen" id="lockScreen">
-            <div>Swipe Up to Unlock</div>
-            <div class="unlock-text">Pull the arrow upwards</div>
-            <div class="unlock-arrow">&#8593;</div>
-        </div>
-
-        <!-- Screen with Apps -->
-        <div class="screen" id="screen">
-            <div class="app-container" id="appContainer">
-                <div class="app" id="app1">
-                    <img src="https://via.placeholder.com/80?text=App1" alt="App 1">
-                    <div class="app-name">App 1</div>
-                </div>
-                <div class="app" id="app2">
-                    <img src="https://via.placeholder.com/80?text=App2" alt="App 2">
-                    <div class="app-name">App 2</div>
-                </div>
-                <div class="app" id="app3">
-                    <img src="https://via.placeholder.com/80?text=App3" alt="App 3">
-                    <div class="app-name">App 3</div>
+    <div class="phone">
+        <div class="phone-screen">
+            <div class="status-bar">
+                <div class="signal"></div>
+                <div class="battery">
+                    <div class="battery-bar"></div>
                 </div>
             </div>
-            <div class="swipe-indicator">
-                <span>Swipe Left / Right</span>
+            
+            <div class="home-screen" id="homeScreen">
+                <div class="app" onclick="openApp('call')">
+                    <div class="app-icon">📞</div>
+                    <p class="app-name">Call</p>
+                </div>
+                <div class="app" onclick="openApp('camera')">
+                    <div class="app-icon">📷</div>
+                    <p class="app-name">Camera</p>
+                </div>
+                <div class="app" onclick="openApp('messages')">
+                    <div class="app-icon">💬</div>
+                    <p class="app-name">Messages</p>
+                </div>
             </div>
-        </div>
 
-        <!-- Modal -->
-        <div class="modal" id="appModal">
-            <p id="modalText">App Info</p>
-            <button class="close-btn" id="closeBtn">Close</button>
+            <!-- App Screens -->
+            <div class="app-screen" id="callScreen">
+                <button class="close-btn" onclick="closeApp('call')">Close</button>
+                <h1>Calling...</h1>
+            </div>
+
+            <div class="app-screen" id="cameraScreen">
+                <button class="close-btn" onclick="closeApp('camera')">Close</button>
+                <h1>Camera App</h1>
+            </div>
+
+            <div class="app-screen" id="messagesScreen">
+                <button class="close-btn" onclick="closeApp('messages')">Close</button>
+                <h1>Messages App</h1>
+            </div>
         </div>
     </div>
 
-    <script>
-        const lockScreen = document.getElementById("lockScreen");
-        const screen = document.getElementById("screen");
-        const appContainer = document.getElementById("appContainer");
-        const modal = document.getElementById("appModal");
-        const modalText = document.getElementById("modalText");
-        const closeBtn = document.getElementById("closeBtn");
-
-        let startY;
-        let unlockStarted = false;
-
-        // Unlock Phone (Swipe Up)
-        lockScreen.addEventListener("touchstart", (e) => {
-            startY = e.touches[0].pageY;
-        });
-
-        lockScreen.addEventListener("touchmove", (e) => {
-            const currentY = e.touches[0].pageY;
-            if (currentY < startY - 100 && !unlockStarted) {
-                unlockStarted = true;
-                lockScreen.style.transform = "translateY(-100%)";
-                screen.style.transform = "translateY(0)";
-            }
-        });
-
-        // Handle Swipe Left / Right for Apps
-        let startSwipeX;
-
-        appContainer.addEventListener("touchstart", (e) => {
-            startSwipeX = e.touches[0].pageX;
-        });
-
-        appContainer.addEventListener("touchend", (e) => {
-            const endSwipeX = e.changedTouches[0].pageX;
-            const swipeDistance = startSwipeX - endSwipeX;
-
-            if (swipeDistance > 50) {
-                // Swipe Left (go to next app screen)
-                appContainer.style.transform = "translateX(-100%)";
-            } else if (swipeDistance < -50) {
-                // Swipe Right (go to previous app screen)
-                appContainer.style.transform = "translateX(0%)";
-            }
-        });
-
-        // App Interactions (click/tap to open modal)
-        function openAppModal(appName) {
-            modalText.textContent = `${appName} is opening...`;
-            modal.style.display = "block";
-        }
-
-        // Click handlers for apps
-        document.getElementById("app1").addEventListener("click", () => openAppModal("App 1"));
-        document.getElementById("app2").addEventListener("click", () => openAppModal("App 2"));
-        document.getElementById("app3").addEventListener("click", () => openAppModal("App 3"));
-
-        // Close modal
-        closeBtn.addEventListener("click", () => {
-            modal.style.display = "none";
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
